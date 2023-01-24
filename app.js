@@ -1,0 +1,36 @@
+const express = require('express');
+const mongoose = require('mongoose');
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
+const { errors } = require('celebrate');
+const routes = require('./routes/index');
+const errorHandler = require('./errors/ErrorHandler');
+const handlerCORS = require('./middlewares/handlerCORS');
+const { requestLog, errorLog } = require('./middlewares/log');
+
+require('dotenv').config();
+
+const { PORT = 3000 } = process.env;
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+});
+
+const app = express();
+app.use(express.json());
+app.use(limiter);
+app.use(helmet());
+app.use(requestLog);
+app.use(handlerCORS);
+app.use('/', routes);
+app.use(errorLog);
+app.use(errors());
+app.use(errorHandler);
+
+mongoose.connect('mongodb://localhost:27017/bitfilmsdb', () => {
+  console.log('Connected mongoDB');
+  app.listen(PORT, () => {
+    console.log(`App listening ${PORT}`);
+  });
+});
