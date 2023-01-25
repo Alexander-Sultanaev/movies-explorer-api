@@ -10,7 +10,7 @@ const { requestLog, errorLog } = require('./middlewares/log');
 
 require('dotenv').config();
 
-const { PORT = 3000 } = process.env;
+const { PORT, MONGO } = process.env;
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -28,7 +28,7 @@ app.use(errorLog);
 app.use(errors());
 app.use(errorHandler);
 
-mongoose.connect('mongodb://localhost:27017/bitfilmsdb', () => {
+mongoose.connect(MONGO, () => {
   console.log('Connected mongoDB');
   app.listen(PORT, () => {
     console.log(`App listening ${PORT}`);
