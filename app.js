@@ -6,11 +6,9 @@ const { errors } = require('celebrate');
 const routes = require('./routes/index');
 const errorHandler = require('./errors/ErrorHandler');
 const handlerCORS = require('./middlewares/handlerCORS');
-const { requestLog, errorLog } = require('./middlewares/log');
-
 require('dotenv').config();
 
-const { PORT, MONGO } = process.env;
+const { PORT = 3000 } = process.env;
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -21,14 +19,11 @@ const app = express();
 app.use(express.json());
 app.use(limiter);
 app.use(helmet());
-app.use(requestLog);
 app.use(handlerCORS);
 app.use('/', routes);
-app.use(errorLog);
 app.use(errors());
 app.use(errorHandler);
-
-mongoose.connect(MONGO, () => {
+mongoose.connect('mongodb://localhost:27017/mestodb', () => {
   console.log('Connected mongoDB');
   app.listen(PORT, () => {
     console.log(`App listening ${PORT}`);
