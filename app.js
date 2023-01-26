@@ -6,9 +6,10 @@ const { errors } = require('celebrate');
 const routes = require('./routes/index');
 const errorHandler = require('./errors/ErrorHandler');
 const handlerCORS = require('./middlewares/handlerCORS');
+const {
+  PORT, NODE_ENV, MONGO_URL, MONGO_URL_DEV,
+} = require('./utils/constants');
 require('dotenv').config();
-
-const { PORT = 3000 } = process.env;
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -23,9 +24,10 @@ app.use(handlerCORS);
 app.use('/', routes);
 app.use(errors());
 app.use(errorHandler);
-mongoose.connect('mongodb://localhost:27017/mestodb', () => {
-  console.log('Connected mongoDB');
-  app.listen(PORT, () => {
-    console.log(`App listening ${PORT}`);
-  });
+mongoose.connect(NODE_ENV === 'production' ? MONGO_URL : MONGO_URL_DEV, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+app.listen(PORT, () => {
+  console.log(`App listening ${PORT}`);
 });

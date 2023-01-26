@@ -1,10 +1,10 @@
 const routes = require('express').Router();
-const { celebrate, Joi } = require('celebrate');
 const { login, createUser } = require('../controllers/users');
 const { auth } = require('../middlewares/auth');
 const movieRoutes = require('./movies');
 const userRoutes = require('./users');
 const NotFoundError = require('../errors/NotFoundError');
+const { signUp, signIn } = require('../middlewares/validations');
 
 routes.get('/crash-test', () => {
   setTimeout(() => {
@@ -12,19 +12,8 @@ routes.get('/crash-test', () => {
   }, 0);
 });
 
-routes.post('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-  }),
-}), login);
-routes.post('/signup', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-  }),
-}), createUser);
+routes.post('/signin', signIn, login);
+routes.post('/signup', signUp, createUser);
 routes.use(auth);
 routes.use('/users', userRoutes);
 routes.use('/movies', movieRoutes);

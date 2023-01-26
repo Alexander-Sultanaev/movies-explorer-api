@@ -46,10 +46,14 @@ const createUser = async (req, res, next) => {
     } = req.body;
     const hash = await bcrypt.hash(password, 10);
     const user = await User.create({
-      name, email, password: hash,
+      email,
+      password: hash,
+      name,
     });
-    return res.json({
-      _id: user._id, email: user.email, name: user.name, about: user.about, avatar: user.avatar,
+    return res.send({
+      name: user.name,
+      _id: user._id,
+      email: user.email,
     });
   } catch (err) {
     console.error(err);
