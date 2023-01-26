@@ -5,7 +5,7 @@ const NotFoundError = require('../errors/NotFoundError');
 const IncorrectDataError = require('../errors/IncorrectDataError');
 const ConflictError = require('../errors/ConflictError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
-const { privateKey } = require('../../react-mesto-api-full/backend/middlewares/auth');
+const { privateKey } = require('../middlewares/auth');
 
 const getUserInfo = async (req, res, next) => {
   try {
