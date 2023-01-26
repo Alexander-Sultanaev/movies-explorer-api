@@ -14,9 +14,9 @@ routes.get('/crash-test', () => {
 
 routes.post('/signin', signIn, login);
 routes.post('/signup', signUp, createUser);
-routes.use(auth);
-routes.use('/users', userRoutes);
-routes.use('/movies', movieRoutes);
+// routes.use(auth);
+routes.use('/users', auth, userRoutes);
+routes.use('/movies', auth, movieRoutes);
 routes.use('*', (req, res, next) => next(new NotFoundError('Ошибка 404. Страница не найдена')));
 
 module.exports = routes;
