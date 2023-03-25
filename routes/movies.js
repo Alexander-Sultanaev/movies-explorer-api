@@ -6,6 +6,6 @@ movieRoutes.get('/', getMovies);
 
 movieRoutes.post('/', createFilmValidation, postMovies);
 
-movieRoutes.delete('/movieId', filmIdValidation, deleteMovie);
+movieRoutes.delete('/:movieId', filmIdValidation, deleteMovie);
 
 module.exports = movieRoutes;
